@@ -6,7 +6,7 @@
     "BOT_CHAT": "", 
     "CURRENCY": "TRX",
     "MARKET": "USDT",
-    "STOP_LIMIT": 1,
-    "TRAILING_STOP": 0.02,
-    "LOOP_TIME": 3,
+    "STOP_LIMIT": 0.5,
+    "TRAILING_STOP": 0.03,
+    "LOOP_TIME": 1
 }

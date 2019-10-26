@@ -19,8 +19,8 @@ var task = cron.schedule('*/' + config.LOOP_TIME + ' * * * * *', () => {
 	CheckDecimals();
 	CheckPrice();
 	CheckBalance();
-	CheckTypeOrder();
 	CheckValueTrade();
+	CheckTypeOrder();
 	CheckShortLongMode();
 	ConsoleLog();
 }, { scheduled: false });
@@ -65,7 +65,10 @@ function sleep(millis) {
 	}
 }
 
-function CalcShortValues() {
+function OpenShortOrder() {
+	// Verifica o preço atual
+	CheckPrice();
+	
 	let temp_price_stop = parseFloat((config.STOP_LIMIT * price) / 100).toFixed(decimal_price);
 	price_stop = (parseFloat(price) + parseFloat(temp_price_stop)).toFixed(decimal_price);	
 	let percentage_limit = parseFloat(0.01 * price_stop / 100).toFixed(decimal_price);
@@ -80,12 +83,6 @@ function CalcShortValues() {
 		let percentage_limit = parseFloat(0.1 * price_stop / 100).toFixed(decimal_price);
 		price_stop_limit = (parseFloat(price_stop) - parseFloat(percentage_limit)).toFixed(decimal_price);
 	}
-}
-
-function OpenShortOrder() {
-	// Verifica o preço atual
-	CheckPrice();
-	CalcShortValues();	
 	
 	// Abre ordem de compra com stop
 	client.order({
@@ -105,7 +102,10 @@ function OpenShortOrder() {
 	});
 }
 
-function CalcLongValues() {
+function OpenLongOrder() {
+	// Verifica o preço atual
+	CheckPrice();
+
 	let temp_price_stop = parseFloat((config.STOP_LIMIT * price) / 100).toFixed(decimal_price);
 	price_stop = (parseFloat(price) - parseFloat(temp_price_stop)).toFixed(decimal_price);				
 	let percentage_limit = parseFloat(0.01 * price_stop / 100).toFixed(decimal_price);
@@ -120,12 +120,6 @@ function CalcLongValues() {
 		let percentage_limit = parseFloat(0.1 * price_stop / 100).toFixed(decimal_price);
 		price_stop_limit = (parseFloat(price_stop) + parseFloat(percentage_limit)).toFixed(decimal_price);
 	}
-}
-
-function OpenLongOrder() {
-	// Verifica o preço atual
-	CheckPrice();
-	CalcLongValues();
 	
 	// Abre ordem de compra com stop
 	client.order({
@@ -140,6 +134,7 @@ function OpenLongOrder() {
 		OrderSellID = result.orderId;
 	}).catch((err) => {
 		console.log(err);
+		console.log(value_trade);
 		console.log("ERRO ORDEM NA ORDEM DE VENDA")
 	});
 }
@@ -217,7 +212,7 @@ function CheckShortOrder() {
 						// Cancela stop antigo
 						CancelOrder(OrderBuyID)
 						// Abre novo stop
-						OpenShortOrder();
+						//OpenShortOrder();
 						sum_short++;
 						profit_trade = (parseFloat(profit_trade) + parseFloat(config.TRAILING_STOP)).toFixed(2);
 					}
@@ -253,9 +248,9 @@ function CheckLongOrder() {
 					let increate_stop = (parseFloat(config.STOP_LIMIT) + parseFloat(config.TRAILING_STOP));
 					if(Math.abs(spread) >= increate_stop) {
 						CancelOrder(OrderSellID);
-						sleep(30);
+						//sleep(30);
 						// Abre novo stop
-						OpenLongOrder();
+						//OpenLongOrder();
 						sum_long++;
 						profit_trade = (parseFloat(profit_trade) + parseFloat(config.TRAILING_STOP)).toFixed(2);
 					}
@@ -307,19 +302,13 @@ function CheckValueTrade() {
 }
 
 function CheckTypeOrder() {
-	let check_currency = (parseFloat(balance_currency).toFixed(decimal_quantity) * price);
-	if(check_currency > 10) {
-		short_mode = 0;
-		trade_label = "LONG";
+	if(OrderBuyID != 0) {
+		short_mode = 1;
+		trade_label = "SHORT";
 	} else {
-		if(OrderBuyID != 0) {
-			short_mode = 1;
-			trade_label = "SHORT";
-		} else {
-			if(OrderSellID != 0) {
-				short_mode = 0;
-				trade_label = "LONG";
-			}
+		if(OrderSellID != 0) {
+			short_mode = 0;
+			trade_label = "LONG";
 		}
 	}
 }

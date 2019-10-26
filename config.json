@@ -1,0 +1,12 @@
+{
+    "API_KEY": "",
+    "SECRET_KEY": "",
+    "ORDER_VALUE": 20,
+    "BOT_TOKEN": "",
+    "BOT_CHAT": "", 
+    "CURRENCY": "TRX",
+    "MARKET": "USDT",
+    "STOP_LIMIT": 1,
+    "TRAILING_STOP": 0.02,
+    "LOOP_TIME": 3,
+}

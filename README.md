@@ -13,12 +13,19 @@ Funcionamento:
 Instruções de uso do config.json
 
 API_KEY e SECRET_KEY:  São as chaves da binance de autenticação. Não vou explicar aqui como é gerada
+
 ORDER_VALUE: É o tamanho a ordem de compra e venda
+
 BOT_TOKEN e BOT_CHAT: São informações do telegram, busque no google como criar um bot e descobrir seu chatid.
+
 CURRENCY: É o mercado, recomendo TRX para conhecer o bot
+
 MARKET: É o par que vai ser trabalhado, recomendo USDT pelo volume
+
 STOP_LIMIT: É a distancia em porcentagem do stop (caso o preço caia ou suba) ao atingir esse valor a ordem é acionada
+
 TRAILING_STOP: Na medida que o preço cai ou sobe, dependendo a ordem ativa no momento, o bot vai acompanhando o preço
+
 LOOP_TIME: É o período em que o bot é acionado para verificar as ordens
 
 
